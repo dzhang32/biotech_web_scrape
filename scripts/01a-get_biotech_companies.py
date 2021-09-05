@@ -53,7 +53,8 @@ def get_company_info(soup):
 
         company_class = company["class"][0]
         name_url = company.find("td", class_ = "company")
-    
+        
+        # depending on class of the entry, info is structured differently
         if company_class == "inter":
         
             continue
@@ -65,7 +66,7 @@ def get_company_info(soup):
         
         else:
             
-            name = name_url.text.strip()
+            name = name_url.find("a")["href"]
             url = name_url.find_all("a")[1]["href"]
         
         location = company.find("td", class_ = "location").text.strip()
