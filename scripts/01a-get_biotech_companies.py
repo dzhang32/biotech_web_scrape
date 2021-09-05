@@ -34,6 +34,13 @@ def soup_url(url):
     return soup
 
 def get_company_info(soup):
+    """Extracts company name, url, location and description. 
+    
+    @type soup: bs4.BeautifulSoup
+    @param iso: Soup object containing website date
+    @rtype: DataFrame
+    @returns: a DataFrame containing company info.
+    """
     
     companies = soup.find("table").find_all("tr")
     
@@ -78,5 +85,5 @@ def get_company_info(soup):
 
 if __name__ == "__main__":
     
-    main(url = "https://biopharmguy.com/links/country-united-kingdom-all-location.php", 
+    main(url = "link_to_page_with_company_details", 
          rel_results_dir = "../results/01a-get_biotech_companies")
