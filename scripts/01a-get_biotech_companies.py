@@ -86,5 +86,5 @@ def get_company_info(soup):
 
 if __name__ == "__main__":
     
-    main(url = "link_to_page_with_company_details", 
+    main(url = "", 
          rel_results_dir = "../results/01a-get_biotech_companies")
