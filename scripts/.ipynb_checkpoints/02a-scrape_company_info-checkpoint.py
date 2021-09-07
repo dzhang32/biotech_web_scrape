@@ -2,24 +2,19 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep  7 00:53:49 2021
+
 @author: david_zhang
 """
 
 import utils
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
 import time
 import pandas as pd
 import datetime as dt
 
 class Company:
-    """Obtain the relevant company details
-
-    Company contains various methods to extract the name,
-    description, location, size, and domains/tags from a
-    BeautifulSoup object.
-    """
+    
     def __init__(self, soup):
         
         self.soup = soup
@@ -27,10 +22,7 @@ class Company:
     def get_name(self):
         
         name = self.soup.find("h1", class_ = "profile-name")
-
-        # required incase that particular company does not
-        # have a specific parameter available
-        # driver.find will return None
+        
         if name is None: 
             
             return ""
@@ -54,10 +46,7 @@ class Company:
     def get_location(self):
     
         location = self.soup.find_all("a", class_ = "link-accent ng-star-inserted")
-
-        # required incase that particular company does not
-        # have a specific parameter available
-        # driver.find_all will return an empty list
+        
         if len(location) == 0: 
             
             return ""
@@ -111,9 +100,8 @@ def main(site, rel_results_dir):
                                      "../results/01b-tidy_biotech_companies/" +
                                      "biotech_company_info_tidy_05_09_2021.csv")
     biotech_comp = pd.read_csv(biotech_comp)
+    biotech_comp = biotech_comp.iloc[range(4,8,1)].reset_index(drop = True)
 
-    # driver need chromedriver executable
-    # https://chromedriver.chromium.org/downloads
     chrom_path = utils.get_rel_dir(__file__, "../tools/chromedriver")
     driver = webdriver.Chrome(chrom_path)
     
@@ -124,23 +112,17 @@ def main(site, rel_results_dir):
     urls = []
     domains = []
 
-    indexes = range(701, len(biotech_comp), 1)
-
-    for i in indexes:
+    for i in range(len(biotech_comp)):
 
         print(str(i) + " - " + biotech_comp["name"][i])
 
-        # attempt to catch error when website changes, doesn't always work
-        # NoSuchElementException is the type of exception thrown when
-        # selenium cannot find an element
         try: 
             
             name, desc, location, size, url, domain = scrape_company_info(driver, site, biotech_comp["name"][i])
             
-        except (AttributeError, IndexError, NoSuchElementException):
+        except (AttributeError, IndexError):
             
             time.sleep(5)
-            driver.implicitly_wait(5)
             
             name, desc, location, size, url, domain = scrape_company_info(driver, site, biotech_comp["name"][i])
         
@@ -152,37 +134,17 @@ def main(site, rel_results_dir):
         urls.append(url)
         domains.append(domain)
 
-        # batch saves, every 50 companies, avoid redoing everything every time
-        # there's an error
-        save_at = list(range(0, len(biotech_comp), 50))
-        save_at.append(len(biotech_comp) - 1)
-        save_at.remove(0)
+    companies_info = convert_to_df(names, descs, locations, sizes, urls, domains)
 
-        if i in save_at:
+    companies_info = pd.concat([biotech_comp, companies_info], axis = 1)
 
-            print("Saving data on the", indexes[0], "-", i, "companies...")
-
-            companies_info = convert_to_df(names, descs, locations, sizes, urls, domains)
-
-            companies_info.to_csv(results_dir + "/" + "biotech_company_scraped_info_" +
-                                  str(indexes[0]) + "-" + str(i) + "_" +
-                                  dt.date.today().strftime("%d_%m_%Y") +
-                                  ".csv",
-                                  index = False)
+    companies_info.to_csv(results_dir + "/" + "biotech_company_scraped_info_" +
+                          dt.date.today().strftime("%d_%m_%Y") +
+                          ".csv",
+                          index = False)
 
 def scrape_company_info(driver, site, company_name):
-    """Scrapes website for info on a specific company
 
-    @type driver: selenium.webdriver.Chrome
-    @param driver: Initialised by selenium.webdriver.Chrome()
-    @type company_name: site
-    @param company_name: Site to be scraped.
-    @type company_name: str
-    @param company_name: Name of the company of interest.
-    @rtype: str
-    @returns: 6 str objects, each containing one aspect
-    of the company
-    """
     source = get_page_source(driver, site, company_name)
 
     soup = BeautifulSoup(source, "html.parser")
@@ -199,18 +161,6 @@ def scrape_company_info(driver, site, company_name):
     return name, desc, location, size, url, domain
 
 def get_page_source(driver, site, company_name):
-    """Searches company and navigates website to the url
-    desribing that company
-
-    @type driver: selenium.webdriver.Chrome
-    @param driver: Initialised by selenium.webdriver.Chrome()
-    @type company_name: site
-    @param company_name: Site to be scraped.
-    @type company_name: str
-    @param company_name: Name of the company of interest.
-    @rtype: bs4.BeautifulSoup
-    @returns: Souped version of the company url.
-    """
 
     driver.get(site)
 
@@ -221,8 +171,6 @@ def get_page_source(driver, site, company_name):
 
     search_box.send_keys(company_name)
 
-    # after putting company in search box, need to
-    # wait for site to dynamically pull up results
     time.sleep(3)
 
     comp_box = driver.find_elements_by_class_name("row-anchor.cb-padding-medium-horizontal.flex" +
@@ -230,7 +178,6 @@ def get_page_source(driver, site, company_name):
                                                   "cb-text-color-medium.ng-star-inserted")
     comp_box[0].click()
 
-    # sometimes loading can be slow
     time.sleep(1)
 
     page_source = driver.page_source
@@ -247,8 +194,9 @@ def convert_to_df(names, descs, locations, sizes, urls, domains):
                                    "domain": domains})
     
     return companies_info
+    
 
 if __name__ == "__main__":
 
-    main(site = "",
+    main(site = "https://www.crunchbase.com/",
          rel_results_dir = "../results/02a-scrape_company_info")

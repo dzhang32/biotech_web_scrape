@@ -80,5 +80,5 @@ def main(site, rel_results_dir):
 
 if __name__ == "__main__":
 
-    main(site = "https://www.crunchbase.com",
+    main(site = "",
          rel_results_dir = "../results/02c-scrape_company_info_2nd_pass")

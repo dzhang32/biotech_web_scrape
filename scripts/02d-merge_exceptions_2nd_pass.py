@@ -18,8 +18,6 @@ def main(rel_complete_path, rel_exceptions_path, rel_exceptions_2nd_pass_path, r
 
     exceptions = repair_exceptions(exceptions, exceptions_2nd)
 
-    print(exceptions)
-
     complete = pd.concat([complete, exceptions]).reset_index(drop = True)
 
     complete.to_csv(results_dir + "/" + "biotech_company_info_complete_" +

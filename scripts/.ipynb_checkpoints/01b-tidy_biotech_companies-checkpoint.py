@@ -11,9 +11,9 @@ import pandas as pd
 import re
 import datetime as dt
 
-def main(rel_df_path, rel_results_dir):
+def main(ref_df_path, rel_results_dir):
     
-    df_path = utils.get_rel_dir(__file__, rel_df_path)
+    df_path = utils.get_rel_dir(__file__, ref_df_path)
     results_dir = utils.get_rel_dir(__file__, rel_results_dir)
     
     df = pd.read_csv(df_path)
@@ -49,5 +49,5 @@ def tidy_location(df):
 
 if __name__ == "__main__":
     
-    main(rel_df_path = "../results/01a-get_biotech_companies/biotech_company_info_05_09_2021.csv",
+    main(df_path = "../results/01a-get_biotech_companies/biotech_company_info_05_09_2021.csv", 
          rel_results_dir = "../results/01b-tidy_biotech_companies")
