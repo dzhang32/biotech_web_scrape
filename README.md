@@ -8,7 +8,7 @@ I do not recommend web scraping data in any way. If you do web scrape, please re
 
 # Contents
 
-It's worth mentioning that due to the ever-updating nature of many websites, it's unlikely that these scripts will remain re-runnable out-of-the-box.
+It's worth mentioning that due to the ever-updating nature of many websites, it's unlikely that these scripts remain re-runnable out-of-the-box.
 
 | Script | Description |
 | --- | --- |
