@@ -4,7 +4,7 @@ As a final year bioinformatics PhD student, I decided to try and make the job hu
 
 # Disclaimer
 
-I do not recommend web scraping data in any way. If you do web scrape, please respect the Terms of Service and [robots.txt](https://www.promptcloud.com/blog/how-to-read-and-respect-robots-file/) of the site you scrape. For more information on the legality of web scraping, you may find this [blog](https://benbernardblog.com/web-scraping-and-crawling-are-perfectly-legal-right/) useful.
+I do not recommend web scraping in any way. If you do web scrape, please respect the Terms of Service and [robots.txt](https://www.promptcloud.com/blog/how-to-read-and-respect-robots-file/) of the site you scrape. For more information on the legality of web scraping, you may find this [blog](https://benbernardblog.com/web-scraping-and-crawling-are-perfectly-legal-right/) useful.
 
 # Contents
 
